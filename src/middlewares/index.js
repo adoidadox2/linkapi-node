@@ -1,11 +1,11 @@
+import ensureAuthenticatedMiddleware from './ensureAuthenticatedMiddleware';
 import expressValidatorMiddleware from './expressValidatorMiddleware';
 import authSessionMiddleware from './authSessionMiddleware';
-import ensureAuthenticated from './ensureAuthenticated';
 import userMiddleware from './userMiddleware';
 
 export {
+  ensureAuthenticatedMiddleware,
   expressValidatorMiddleware,
   authSessionMiddleware,
-  ensureAuthenticated,
   userMiddleware,
 };

@@ -3,7 +3,6 @@ import { Promise } from 'bluebird';
 
 import { Deal } from '../models';
 import { PipeDriveService } from '../services';
-import { AppError } from '../errors';
 
 class PopulateDealsCron {
   constructor() {
@@ -12,7 +11,7 @@ class PopulateDealsCron {
   }
 
   init() {
-    schedule('* * * * *', async () => {
+    schedule('* 5 * * *', async () => {
       if (!this.running) {
         console.log('PopulateDealsCron started');
         this.running = true;
@@ -22,17 +21,18 @@ class PopulateDealsCron {
         try {
           foundDeals = await Deal.find({});
         } catch (e) {
-          throw new AppError('Something happened, could not get deals');
+          throw new Error('Something happened, could not get deals');
         }
 
         const startOffset = foundDeals.length;
 
         PipeDriveService.requestDeals(startOffset)
-          .then(dealsArray => {
-            if (dealsArray) {
-              console.log(`${dealsArray.length} deals found`);
+          .then(requestedDealsArray => {
+            if (requestedDealsArray) {
+              console.log(`${requestedDealsArray.length} deals found`);
+
               Promise.map(
-                dealsArray,
+                requestedDealsArray,
                 async singleDeal => {
                   let createdDeal;
                   let alreadyExistingDeal;
@@ -42,7 +42,7 @@ class PopulateDealsCron {
                       deal_id: singleDeal.deal_id,
                     });
                   } catch (e) {
-                    throw new AppError(
+                    throw new Error(
                       'Something happened, deal could not be created',
                     );
                   }
