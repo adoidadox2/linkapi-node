@@ -34,7 +34,6 @@ class UserController {
         password: BcryptHelper.hash(password),
       });
     } catch (e) {
-      console.log(e);
       throw new AppError('Something happened, the user could not be created');
     }
 
