@@ -2,6 +2,9 @@ import { Router } from 'express';
 
 import userRouter from './user.routes';
 import authRouter from './auth.routes';
+import balanceRouter from './balance.routes';
+
+import { ensureAuthenticatedMiddleware } from '../middlewares';
 
 const routes = Router();
 
@@ -17,5 +20,6 @@ routes.get('/', (request, response) => {
 
 routes.use('/users', userRouter);
 routes.use('/auth', authRouter);
+routes.use('/balances', ensureAuthenticatedMiddleware, balanceRouter);
 
 export default routes;
