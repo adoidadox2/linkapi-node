@@ -14,6 +14,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    "no-underscore-dangle":"off",
     "no-console": "off",
     "no-new": "off",
     "dot-notation": "off",

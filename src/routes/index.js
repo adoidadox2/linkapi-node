@@ -1,5 +1,8 @@
 import { Router } from 'express';
 
+import userRouter from './user.routes';
+import authRouter from './auth.routes';
+
 const routes = Router();
 
 routes.get('/', (request, response) => {
@@ -11,5 +14,8 @@ routes.get('/', (request, response) => {
     Status: 'Online',
   });
 });
+
+routes.use('/users', userRouter);
+routes.use('/auth', authRouter);
 
 export default routes;

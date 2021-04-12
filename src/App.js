@@ -14,8 +14,8 @@ class App {
     this.server = express();
 
     this.middlewares();
-    this.errors();
     this.routes();
+    this.errors();
   }
 
   middlewares() {
