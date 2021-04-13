@@ -12,7 +12,7 @@ class SendOrdersCron {
   }
 
   init() {
-    schedule('* * * * *', async () => {
+    schedule(`${process.env.ORDERS_CRON_TIME}`, async () => {
       if (!this.running) {
         console.log('SendOrdersCron started');
         this.running = true;
@@ -20,9 +20,7 @@ class SendOrdersCron {
         Deal.find({ verified: false })
           .then(nonVerifiedDealsArray => {
             if (nonVerifiedDealsArray) {
-              console.log(
-                `${nonVerifiedDealsArray.length} non verified deals found`,
-              );
+              console.log(`${nonVerifiedDealsArray.length} orders to send`);
 
               Promise.map(
                 nonVerifiedDealsArray,
@@ -81,8 +79,6 @@ class SendOrdersCron {
                     );
                   }
 
-                  // console.log(JSON.stringify(blingResponse));
-
                   return blingResponse;
                 },
                 { concurrency: 1 },
@@ -96,7 +92,7 @@ class SendOrdersCron {
                   this.running = false;
                 });
             } else {
-              console.log(`0 non verified deals found`);
+              console.log(`0 orders to send`);
               console.log('SendOrdersCron finished');
               this.running = false;
             }

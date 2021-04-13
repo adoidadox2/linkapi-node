@@ -11,35 +11,23 @@ class PopulateDealsCron {
   }
 
   init() {
-    schedule('* 5 * * *', async () => {
+    schedule(`${process.env.DEALS_CRON_TIME}`, async () => {
       if (!this.running) {
         console.log('PopulateDealsCron started');
         this.running = true;
 
-        let foundDeals;
-
-        try {
-          foundDeals = await Deal.find({});
-        } catch (e) {
-          throw new Error('Something happened, could not get deals');
-        }
-
-        const startOffset = foundDeals.length;
-
-        PipeDriveService.requestDeals(startOffset)
+        PipeDriveService.requestDeals()
           .then(requestedDealsArray => {
             if (requestedDealsArray) {
-              console.log(`${requestedDealsArray.length} deals found`);
-
               Promise.map(
                 requestedDealsArray,
-                async singleDeal => {
+                async integrationResponseDeal => {
                   let createdDeal;
                   let alreadyExistingDeal;
 
                   try {
                     alreadyExistingDeal = await Deal.findOne({
-                      deal_id: singleDeal.deal_id,
+                      deal_id: integrationResponseDeal.id,
                     });
                   } catch (e) {
                     throw new Error(
@@ -50,12 +38,12 @@ class PopulateDealsCron {
                   if (!alreadyExistingDeal) {
                     try {
                       createdDeal = await Deal.create({
-                        deal_id: singleDeal.id,
-                        title: singleDeal.title,
-                        customer_name: singleDeal.person_id.name,
-                        value: singleDeal.value,
-                        currency: singleDeal.currency,
-                        won_time: singleDeal.won_time,
+                        deal_id: integrationResponseDeal.id,
+                        title: integrationResponseDeal.title,
+                        customer_name: integrationResponseDeal.person_id.name,
+                        value: integrationResponseDeal.value,
+                        currency: integrationResponseDeal.currency,
+                        won_time: integrationResponseDeal.won_time,
                       });
                     } catch (e) {
                       console.log(e);
@@ -78,7 +66,6 @@ class PopulateDealsCron {
                   this.running = false;
                 });
             } else {
-              console.log(`0 deals found`);
               console.log('PopulateDealsCron finished');
               this.running = false;
             }
