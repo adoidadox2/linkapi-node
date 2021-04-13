@@ -7,7 +7,7 @@ class PipeDriveService {
 
     try {
       pipeDriverResponse = await pipeDriveAPI.get(
-        `/deals?status=won&start=${startOffset}&api_token=${process.env.PIPE_TOKEN}`,
+        `/deals?status=won&start=${startOffset}&api_token=${process.env.PIPE_TOKEN}&sort=won_time ASC`,
       );
     } catch (e) {
       throw new AppError('Error while requesting deals');

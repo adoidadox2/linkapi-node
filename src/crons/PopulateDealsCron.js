@@ -16,9 +16,21 @@ class PopulateDealsCron {
         console.log('PopulateDealsCron started');
         this.running = true;
 
-        PipeDriveService.requestDeals()
+        let foundDeals;
+
+        try {
+          foundDeals = await Deal.find({});
+        } catch (e) {
+          throw new Error('Something happened, could not get deals');
+        }
+
+        const startOffset = foundDeals.length;
+
+        PipeDriveService.requestDeals(startOffset)
           .then(requestedDealsArray => {
             if (requestedDealsArray) {
+              console.log(`Deals found: ${requestedDealsArray.length}`);
+
               Promise.map(
                 requestedDealsArray,
                 async integrationResponseDeal => {
@@ -66,6 +78,7 @@ class PopulateDealsCron {
                   this.running = false;
                 });
             } else {
+              console.log(`Deals found: 0`);
               console.log('PopulateDealsCron finished');
               this.running = false;
             }

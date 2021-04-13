@@ -20,7 +20,7 @@ class SendOrdersCron {
         Deal.find({ verified: false })
           .then(nonVerifiedDealsArray => {
             if (nonVerifiedDealsArray) {
-              console.log(`${nonVerifiedDealsArray.length} orders to send`);
+              console.log(`Orders to send: ${nonVerifiedDealsArray.length}`);
 
               Promise.map(
                 nonVerifiedDealsArray,
@@ -92,7 +92,7 @@ class SendOrdersCron {
                   this.running = false;
                 });
             } else {
-              console.log(`0 orders to send`);
+              console.log(`Orders to send: 0`);
               console.log('SendOrdersCron finished');
               this.running = false;
             }
