@@ -7,7 +7,12 @@ class UserController {
     let users;
 
     try {
-      users = await User.find();
+      users = await User.find().select({
+        name: 1,
+        _id: 1,
+        email: 1,
+        createdAt: 1,
+      });
     } catch (e) {
       throw new AppError('Something happened, could not list users');
     }
