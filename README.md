@@ -34,6 +34,12 @@ Import the `Teste - LinkApi.postman_collection.json` on Postman App.
 
 I recommend using [CronTab](https://crontab.guru/) to deal with the times of the crons
 
+#### Create the .env file
+
+
+    $ cp .env.example .env
+
+Set with YOUR environment variables.
 #### Install the dependencies
 
 
